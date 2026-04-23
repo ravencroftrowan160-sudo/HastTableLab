@@ -44,12 +44,26 @@ int StringHash::getNextPrime(int n) const {
     return n;
 }
 
-int StringHash::hash(const std::string &item) const {
-    long hash = 0;
-    for (char c : item) {
-        hash = (hash * 31 + c) % size;
+std::string StringHash::displayTable() const {
+    std::ostringstream out;
+
+    for (int i = 0; i < size; i++) {
+        out << table[i] << "\n";
     }
-    return static_cast<int>(hash);
+
+    return out.str();
+}
+
+int StringHash::hash(const std::string &item) const {
+    long hashValue = 0;
+
+    for (char c : item) {
+        hashValue *= 128;
+        hashValue += static_cast<unsigned char>(c);
+        hashValue %= size;
+    }
+
+    return static_cast<int>(hashValue);
 }
 
 void StringHash::grow(){
@@ -145,13 +159,4 @@ void StringHash::addItem(const std::string &item) {
         table[firstDeleted] = item;
         count++;
     }
-}
-std::string StringHash::displayTable() const {
-    std::ostringstream out;
-
-    for (int i = 0; i < size; i++) {
-        out << i << ": " << table[i] << "\n";
-    }
-
-    return out.str();
 }
